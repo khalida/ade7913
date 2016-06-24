@@ -15,12 +15,19 @@
   ICSP-3          --    SCLK
   ICSP-4          --    MOSI
   ===================================================================================
+
+  This code is in the public domain, no guarantees of performance and all that:
+  
+
+  Credit to Corgitronics for getting me started with his github code:
+  https://github.com/corgitronics/Arduino/blob/master/ADE7913_average/ADE7913_average.ino
+  https://corgitronics.com/
 */
 
 // inslude the SPI library:
 #include <SPI.h>
 
-// SPI settings for the ADE7913, use min. SCLK speed of 250kHz for now:
+// SPI settings for the ADE7913, use min. SCLK speed of 250kHz for debugging:
 SPISettings spiSettings(4096000, MSBFIRST, SPI_MODE3);
 
 // DEFINE COMMAND BYTES FOR ADE7913, 5-bit address. reads end 100:
@@ -137,8 +144,8 @@ void setup() {
   // Initialize CONFIG register with bit 0 (CLKOUT_EN) cleared (to 0)
   // as CLKOUT unecessary (we provide it from ardiuno)
   // also SET TEMP_EN (bit 3) so temperature can be measured (we're not using V2P)
-  // SET ADC_FREQ (bit 5:4) to 11 (1kHz for debugging)
-  boolean writeSuccess = writeADE7913_check(CONFIG_WRITE, 0b00111000, CONFIG_READ);
+  // SET ADC_FREQ (bit 5:4) to 11 (1kHz for debugging), otherwise 00 (8kHx) for running
+  boolean writeSuccess = writeADE7913_check(CONFIG_WRITE, 0b00001000, CONFIG_READ);
   delay(100);
   readMultBytesADE7913(CONFIG_READ, CONFIG, 1);
   if (writeSuccess) {
